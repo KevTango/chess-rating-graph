@@ -2,6 +2,7 @@ import os
 import berserk
 import numpy as np
 import datetime as DT
+from matplotlib import cycler
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
@@ -36,42 +37,100 @@ class LichessRatingType(Enum):
     PUZZLES = 13
     ULTRABULLET = 14
 
-# read list output from JSON
-rapid_ratings_list = ratings_json[LichessRatingType.RAPID.value]['points']
+def plot_lichess_results(mode):
+    for i in range(len(LichessRatingType)):
+        # read list output from JSON
+        ratings_list = ratings_json[LichessRatingType(i).value]['points']
 
-# extract data and append to array
-rapid_date_array = np.array([])
-rapid_rating_array = np.array([])
+        # will only output non null data
+        if (not(len(ratings_list))):
+            continue
 
-for i in range(len(rapid_ratings_list)):
-    rapid_date_array = np.append(rapid_date_array, [DT.date(rapid_ratings_list[i][0], rapid_ratings_list[i][1]+1, rapid_ratings_list[i][2])])
-    rapid_rating_array = np.append(rapid_rating_array, [rapid_ratings_list[i][3]])
+        # will not show puzzle ratings (comment out if needed)
+        if (LichessRatingType(i).value == LichessRatingType.PUZZLES.value):
+            continue
+        
+        # extract data and append to array
+        date_array = np.array([])
+        rating_array = np.array([])
 
-rapid_date_array = rapid_date_array.astype(DT.date)
+        for x in range(len(ratings_list)):
+            date_array = np.append(date_array, [DT.date(ratings_list[x][0], ratings_list[x][1]+1, ratings_list[x][2])])
+            rating_array = np.append(rating_array, [ratings_list[x][3]])
 
-# plot data
+        date_array = date_array.astype(DT.date)
+        
+        if (mode == 0):
+            ax.plot(date_array, rating_array, label=f"Lichess {LichessRatingType(i).name} Rating")
+        elif (mode == 1):
+            ax1.plot(date_array, rating_array, label=f"Lichess {LichessRatingType(i).name} Rating")
+        elif (mode == 2):
+            ax2.plot(date_array, rating_array, label=f"Lichess {LichessRatingType(i).name} Rating")
+
+# plot default graph
 fig, ax = plt.subplots()
-ax.plot(rapid_date_array, rapid_rating_array, label="Lichess Rapid Rating")
+plot_lichess_results(0)
 ax.legend()
+plt.title('Chess Rating History')
 plt.xlabel('Date')
 plt.ylabel('Rating')
-plt.title('Chess Rating History')
 
 # format x-axis e.g. Jan 2020
 xfmt = mdates.DateFormatter('%b %Y')
 ax.xaxis.set_major_formatter(xfmt)
 fig.autofmt_xdate()
 
-# save graph
 fig.savefig('api/static/chess_rating_graph.svg')
 
-# plt.show()
+# plot dark mode graph
+fig1, ax1 = plt.subplots(facecolor='#151515')
+plot_lichess_results(1)
+ax1.legend()
+ax1.set_facecolor('#151515')
+plt.title('Chess Rating History', color = '#ffffff')
+plt.xlabel('Date', color = '#ffffff')
+plt.ylabel('Rating',  color = '#ffffff')
+ax1.tick_params(labelcolor='#9f9f9f')
+
+# format x-axis e.g. Jan 2020
+xfmt1 = mdates.DateFormatter('%b %Y')
+ax.xaxis.set_major_formatter(xfmt1)
+fig1.autofmt_xdate()
+
+fig1.savefig('api/static/chess_rating_graph_dark.svg')
+
+# plot tokyo night mode graph
+fig2, ax2 = plt.subplots(facecolor='#1a1b27')
+plot_lichess_results(2)
+ax2.legend()
+ax2.set_facecolor('#1a1b27')
+plt.title('Chess Rating History', color = '#70a5fd')
+plt.xlabel('Date', color = '#70a5fd')
+plt.ylabel('Rating',  color = '#70a5fd')
+ax2.tick_params(labelcolor='#38bdae')
+
+# format x-axis e.g. Jan 2020
+xfmt2 = mdates.DateFormatter('%b %Y')
+ax2.xaxis.set_major_formatter(xfmt2)
+fig2.autofmt_xdate()
+
+fig2.savefig('api/static/chess_rating_graph_tokyo.svg')
+
+#plt.show()
 
 app = Flask(__name__)
 
 @app.route('/')
 def graph():
     return render_template('graph.html')
+
+@app.route('/dark')
+def dark():
+    return render_template('graph_dark.html')
+
+@app.route('/tokyo')
+def tokyo():
+    return render_template('graph_tokyo.html')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=os.getenv("PORT") or 5000)
