@@ -2,7 +2,6 @@ import os
 import berserk
 import numpy as np
 import datetime as DT
-from matplotlib import cycler
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 

@@ -18,8 +18,10 @@ if (LichessRatingType(i).value == LichessRatingType.PUZZLES.value):
 - Different mode available based on filename:
     - Default: https://chess-rating-graph.herokuapp.com/
     <img src="./api/static/chess_rating_graph.svg">
+
     - Dark Mode: https://chess-rating-graph.herokuapp.com/dark
     <img src="./api/static/chess_rating_graph_dark.svg">
+    
     - Tokyo Night Mode: https://chess-rating-graph.herokuapp.com/tokyo
     <img src="./api/static/chess_rating_graph_tokyo.svg">
 
