@@ -80,6 +80,7 @@ ax.xaxis.set_major_formatter(xfmt)
 fig.autofmt_xdate()
 
 fig.savefig('api/static/chess_rating_graph.svg')
+fig.savefig('api/static/chess_rating_graph.png')
 
 # plot dark mode graph
 fig1, ax1 = plt.subplots(facecolor='#151515')
@@ -97,6 +98,7 @@ ax.xaxis.set_major_formatter(xfmt1)
 fig1.autofmt_xdate()
 
 fig1.savefig('api/static/chess_rating_graph_dark.svg')
+fig1.savefig('api/static/chess_rating_graph_dark.png')
 
 # plot tokyo night mode graph
 fig2, ax2 = plt.subplots(facecolor='#1a1b27')
@@ -114,22 +116,35 @@ ax2.xaxis.set_major_formatter(xfmt2)
 fig2.autofmt_xdate()
 
 fig2.savefig('api/static/chess_rating_graph_tokyo.svg')
+fig2.savefig('api/static/chess_rating_graph_tokyo.png')
 
 #plt.show()
 
 app = Flask(__name__)
 
-@app.route('/')
+@app.route('/default')
 def graph():
-    return render_template('graph.html')
+    return render_template('graph_default.html')
+
+@app.route('/default_png')
+def graph_png():
+    return render_template('graph_default_png.html')
 
 @app.route('/dark')
 def dark():
     return render_template('graph_dark.html')
 
+@app.route('/dark_png')
+def dark_png():
+    return render_template('graph_dark_png.html')
+
 @app.route('/tokyo')
 def tokyo():
     return render_template('graph_tokyo.html')
+
+@app.route('/tokyo_png')
+def tokyo_png():
+    return render_template('graph_tokyo_png.html')
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", debug=True, port=os.getenv("PORT") or 5000)

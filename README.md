@@ -16,7 +16,7 @@ if (LichessRatingType(i).value == LichessRatingType.PUZZLES.value):
     - LICHESS_API_TOKEN: Paste your API token from https://lichess.org/account/oauth/token
     - LICHESS_USERNAME: Your Lichess username
 - Different mode available based on filename:
-    - Default: https://chess-rating-graph.herokuapp.com/
+    - Default: https://chess-rating-graph.herokuapp.com/default
     <img src="./api/static/chess_rating_graph.svg">
 
     - Dark Mode: https://chess-rating-graph.herokuapp.com/dark
