@@ -122,6 +122,10 @@ fig2.savefig('api/static/chess_rating_graph_tokyo.png')
 
 app = Flask(__name__)
 
+@app.route('/')
+def hello_world():
+    return("Hello world!")
+
 @app.route('/default')
 def graph():
     return render_template('graph_default.html')
